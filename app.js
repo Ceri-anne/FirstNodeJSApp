@@ -13,13 +13,21 @@ function printMessage(username, badgeCount, points) {
 //Connect to the API  (http://teamtreehousecom/username.json)
 
  var request = https.get("https://teamtreehouse.com/" + username + ".json", function(response) {
-	console.log(response.statusCode);
+	var body ="";
 	response.on('data',function(chunk){
-		console.log('BODY: ' + chunk);
+		body += chunk;
 	});
-
+	response.on('end', function(){
+		var profile = JSON.parse(body);
+		printMessage(username, profile.badges.length,profile.points.javascript);
+		
+	});
 });
 
 //Read the data
 //Parse the data
 //Print the data
+
+request.on("error", function(error) {
+	console.error(error.message);
+});
