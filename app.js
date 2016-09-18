@@ -1,50 +1,6 @@
-//Problem: We need a simple way to look at a user's badge count and Javascript points
-//Solution: Use Node.js to connect to Treehouse's API to get profile information to print out
-var https = require("https");
-var http = require("http");
-var username = "chalkers";
+var profile = require("./profile.js");
 
-//Print out message
-function printMessage(username, badgeCount, points) {
-	var message = username + " has " + badgeCount + " total badge(s) and " + points + " points in Javascript";
-	console.log(message);
-}
+var users = process.argv.slice(2);
 
-//Print out error messages
-function printError(error) {
-	console.error(error.message);
-}
+users.forEach(profile.get);
 
-//Connect to the API  (http://teamtreehousecom/username.json)
-
- var request = https.get("https://teamtreehouse.com/" + username + ".json", function(response) {
-	var body ="";
-	response.on('data',function(chunk){
-		body += chunk;
-	});
-	response.on('end', function(){
-
-	if (response.statusCode === 200) {
-		try {
-			var profile = JSON.parse(body);
-			printMessage(username, profile.badges.length,profile.points.JavaScript);
-		} catch(error) {
-			//Parse Error
-			printError(error);
-		}
-	} 
-	else {
-		//Status Code Error
-		printError({message: "There was an error getting the profile for " + username + ". (" +
-				response.statusMessage + ")"
-		});
-	}
-	});
-});
-
-//Read the data
-//Parse the data
-//Print the data
-
-//Connection Error
-request.on("error",printError);
